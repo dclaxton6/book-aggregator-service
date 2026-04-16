@@ -4,7 +4,7 @@
 ## Current Status
 -  **Phase 1: Foundation and Single-Source Integration**
     - [x] Initialize project structure and maven wrapper
-    - [ ] Implement Jackson Infrastructure
+    - [x] Implement Jackson Infrastructure
     - [ ] Integrate Google Books API 
 
 ## Built with

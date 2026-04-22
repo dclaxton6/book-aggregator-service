@@ -42,5 +42,5 @@ allowing these sources to be normalized into a unified data model.
 
 ## How to run
 1. Clone the repository.
-2. Run `./mvnw clean install` (or `mvnw.cmd` on Windows).
+2. Run `./mvnw clean install` (or `./mvnw.cmd clean install` on Windows).
 3. Run `java -jar target/book-aggregator-0.0.1-SNAPSHOT.jar`.

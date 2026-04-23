@@ -28,7 +28,6 @@ public class JacksonConfigTest {
       ]
     }
     """;
-
          GoogleBooksResponse googleBook = JacksonConfig.getMapper().readValue(dummyJson, GoogleBooksResponse.class);
          assertFalse(googleBook.items().isEmpty());
          assertEquals("test_id_123", googleBook.items().getFirst().id());

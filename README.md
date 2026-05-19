@@ -2,11 +2,10 @@
 # A high-concurrency java 21 service designed to aggregate and normalize literary metadata from various external APIs
 
 ## Current Status
--  **Phase 1: Foundation and Single-Source Integration**
-    - [x] Initialize project structure and maven wrapper
-    - [x] Implement Jackson Infrastructure
-    - [ ] Integrate Google Books API 
-
+- **Phase 2:** Service Layer and Multi-Source Integration.
+  - [ ] Initialize Service Layer Architecture
+  - [ ] Implement Exhaustive Error Logic
+  - [ ] Integrate OpenLibrary API
 ## Built with
 - **Java 21(LTS)** - Utilizing Records and Virtual Threads. 
 
@@ -32,14 +31,27 @@ allowing these sources to be normalized into a unified data model.
 -  Implement Project Loom (Virtual Threads) to enable concurrent multi-source aggregation
 
 ## Roadmap
-- **Phase 2:** Spring Boot 3 Migration & PostgreSQL Persistence.
+- **Phase 3:** Spring Boot 3 Migration & PostgreSQL Persistence.
+<!--
+- [ ] Wrap the functional core into managed Spring service and component beans.
+- [ ] Spin up a physical database engine and implement Spring Data repositories to transition from memory storage to permanent data tracking.
+-->
 
+- **Phase 4:** High-Concurrency implementation through **Project Loom**.
+<!-- 
+- [ ] Virtual Threads Integration: Configure concurrent execution pipelines to fetch data from your multiple API sources simultaneously without blocking execution threads.
+-->
 
-- **Phase 3:** High-Concurrency implementation through **Project Loom**.
+- **Phase 5:** Distributed messaging with **Apache Kafka**.
+<!-- 
+- [ ]Introduce Apache Kafka brokers to publish integration events whenever books are successfully aggregated or a data integrity failure occurs.
+-->
 
-
-- **Phase 4:** Distributed messaging with **Apache Kafka**.
-
+## Previous Phases
+   **Phase 1: Foundation and Single-Source Integration**
+   - [x] Initialize project structure and maven wrapper
+   - [x] Implement Jackson Infrastructure
+   - [x] Integrate Google Books API
 ## How to run
 1. Clone the repository.
 2. Run `./mvnw clean install` (or `./mvnw.cmd clean install` on Windows).

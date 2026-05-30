@@ -1,15 +1,19 @@
 package com.dc.bookaggregator.infrastructure.clients.google.mapper;
 
+import com.dc.bookaggregator.domain.exceptions.ResourceNotFoundException;
+import com.dc.bookaggregator.domain.exceptions.SieveFailureException;
 import com.dc.bookaggregator.domain.models.Book;
+import com.dc.bookaggregator.infrastructure.dtos.google.GoogleBooksResponse;
 import com.dc.bookaggregator.infrastructure.dtos.google.IndustryIdentifier;
-import com.dc.bookaggregator.infrastructure.dtos.google.Volume;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class Mapper {
-    public Book toDomain(Volume volume){
+    public Book toDomain(GoogleBooksResponse response){
+        var volume = response.items().stream().findFirst().orElseThrow(() ->
+                new ResourceNotFoundException("No book volume payloads located in the external registry for the requested ISBN"));
         var info = volume.volumeInfo();
         String id = volume.id();
         String title = info.title();
@@ -30,34 +34,33 @@ public class Mapper {
 
     private LocalDate parsePublishedDate(String rawDate){
         if(rawDate == null || rawDate.isEmpty()){return null;}
-        try{
-            if (rawDate.matches("^\\d{4}.*")) {
-                LocalDate parsedDate;
-                if (rawDate.length() == 10) {parsedDate = LocalDate.parse(rawDate);
-                } else if (rawDate.length() == 7) {
-                    parsedDate = LocalDate.parse(rawDate + "-01");
-                } else {
-                    parsedDate = LocalDate.parse(rawDate + "-01-01");
-                }
-            return parsedDate;
+        try {
+                if (rawDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                    return LocalDate.parse(rawDate);
+                }  else if (rawDate.matches("^\\d{4}-\\d{2}$")) {
+                    return LocalDate.parse(rawDate + "-01");
+                }  else if(rawDate.matches("^\\d{4}$")){
+                    return LocalDate.parse(rawDate + "-01-01");
+                } else{
+                throw new SieveFailureException("Encountered corrupt or completely unparsable date format: " + rawDate );
             }
-        } catch (DateTimeParseException ex){return null;}
-        return null;
+        } catch (DateTimeParseException ex){
+           throw new SieveFailureException("Valid date layout contains an invalid calendar sequence: " + rawDate, ex);
+        }
     }
 
     private String extractIsbn13(List<IndustryIdentifier> identifiers){
-
-
-     var isbn_13 = identifiers.stream().filter(x -> x.type().equals("ISBN_13")).findFirst();
-     if (isbn_13.isPresent()){
+        var isbn_13 = identifiers.stream().filter(x -> x.type().equals("ISBN_13")).findFirst();
+        if (isbn_13.isPresent()){
           return isbn_13.get().identifier();
-     } else {
-          var isbn_10 = identifiers.stream().filter(x -> x.type().equals("ISBN_10")).findFirst();
-          if(isbn_10.isPresent()){
+        }
+        else {
+            var isbn_10 = identifiers.stream().filter(x -> x.type().equals("ISBN_10")).findFirst();
+            if(isbn_10.isPresent()){
               return isbn_10.get().identifier();
-          } else{
-             return "";
-          }
-      }
+            } else {
+                return "";
+            }
+        }
     }
 }
